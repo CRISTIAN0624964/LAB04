@@ -1,56 +1,105 @@
-public class ViajeMasBarato {
+Proceso SistemaFacturacion
+    Definir opcion Como Entero
+    Definir sesionActiva Como Booleano
+    sesionActiva <- FALSO
 
-    // Función que calcula los costos mínimos entre cada par de nodos en un grafo dirigido
-    // utilizando un enfoque de programación dinámica
-    public static int[][] costosMinimos(int[][] costos) {
-        int n = costos.length; // Número de nodos/ciudades
-        int[][] minCostos = new int[n][n]; // Matriz que almacenará los costos mínimos
+    Escribir "=== SISTEMA DE FACTURACIÓN ==="
+    Escribir "Ingrese usuario:"
+    Leer usuario
+    Escribir "Ingrese contraseña:"
+    Leer contrasena
 
-        // Recorremos la matriz desde el final hacia el inicio (i de n-1 a 0)
-        for (int i = n - 1; i >= 0; i--) {
-            for (int j = i; j < n; j++) {
-                if (i == j) {
-                    // El costo de ir de una ciudad a sí misma es 0
-                    minCostos[i][j] = 0;
-                } else {
-                    // Inicialmente tomamos el costo directo de i a j
-                    minCostos[i][j] = costos[i][j];
+    Si Login(usuario, contrasena) Entonces
+        sesionActiva <- VERDADERO
+    Sino
+        Escribir "Credenciales incorrectas."
+        FinProceso
+    FinSi
 
-                    // Buscamos si existe una ciudad intermedia k tal que el costo
-                    // de ir de i a k y luego de k a j sea menor que el directo
-                    for (int k = i + 1; k < j; k++) {
-                        minCostos[i][j] = Math.min(minCostos[i][j], costos[i][k] + minCostos[k][j]);
-                    }
-                }
-            }
-        }
+    Mientras sesionActiva = VERDADERO
+        Escribir "1. Registrar Cliente"
+        Escribir "2. Registrar Producto"
+        Escribir "3. Crear Factura"
+        Escribir "4. Salir"
+        Leer opcion
 
-        // Devolvemos la matriz con todos los costos mínimos
-        return minCostos;
-    }
+        Segun opcion Hacer
+            1:
+                Llamar RegistrarCliente
+            2:
+                Llamar RegistrarProducto
+            3:
+                Llamar CrearFactura
+            4:
+                sesionActiva <- FALSO
+        FinSegun
+    FinMientras
 
-    public static void main(String[] args) {
-        // Matriz de costos directos entre ciudades
-        int[][] costos = {
-                {0, 2, 5, 1},
-                {0, 0, 4, 3},
-                {0, 0, 0, 2},
-                {0, 0, 0, 0}
-        };
+FinProceso
 
-        // Llamada a la función para obtener los costos mínimos
-        int[][] minCostosResult = costosMinimos(costos);
+// Función Login
+Funcion Login(usuario, contrasena) : Booleano
+    // Aquí iría validación contra BD (simulada)
+    Si usuario = "admin" Y contrasena = "1234" Entonces
+        Login <- VERDADERO
+    Sino
+        Login <- FALSO
+    FinSi
+FinFuncion
 
-        // Imprimir la matriz de costos mínimos
-        System.out.println("Generando matriz de costos minimos:");
-        for (int i = 0; i < minCostosResult.length; i++) {
-            for (int j = 0; j < minCostosResult.length; j++) {
-                System.out.print(minCostosResult[i][j] + " ");
-            }
-            System.out.println();
-        }
+// Registrar Cliente
+SubProceso RegistrarCliente
+    Definir nombre, documento, direccion Como Cadena
+    Escribir "Ingrese nombre del cliente:"
+    Leer nombre
+    Escribir "Ingrese N° de documento:"
+    Leer documento
+    Escribir "Ingrese dirección:"
+    Leer direccion
 
-        // Imprimir el costo mínimo para ir de la ciudad 0 a la ciudad 3
-        System.out.println("\nCosto minimo de 0 a 3: " + minCostosResult[0][3]);
-    }
-}
+    // Simula guardar cliente
+    Escribir "Cliente registrado correctamente."
+FinSubProceso
+
+// Registrar Producto
+SubProceso RegistrarProducto
+    Definir nombreProducto Como Cadena
+    Definir precio, stock Como Real
+    Escribir "Ingrese nombre del producto:"
+    Leer nombreProducto
+    Escribir "Ingrese precio:"
+    Leer precio
+    Escribir "Ingrese stock:"
+    Leer stock
+
+    // Simula guardar producto
+    Escribir "Producto registrado correctamente."
+FinSubProceso
+
+// Crear Factura
+SubProceso CrearFactura
+    Definir subtotal, igv, total, precioUnitario Como Real
+    Definir cantidad Como Entero
+    Definir nombreCliente, producto Como Cadena
+
+    Escribir "Ingrese nombre del cliente:"
+    Leer nombreCliente
+    Escribir "Ingrese nombre del producto:"
+    Leer producto
+    Escribir "Ingrese cantidad:"
+    Leer cantidad
+    Escribir "Ingrese precio unitario:"
+    Leer precioUnitario
+
+    subtotal <- precioUnitario * cantidad
+    igv <- subtotal * 0.18
+    total <- subtotal + igv
+
+    Escribir "FACTURA:"
+    Escribir "Cliente: ", nombreCliente
+    Escribir "Producto: ", producto
+    Escribir "Cantidad: ", cantidad
+    Escribir "Subtotal: S/", subtotal
+    Escribir "IGV (18%): S/", igv
+    Escribir "Total a pagar: S/", total
+FinSubProceso
